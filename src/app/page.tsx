@@ -1,11 +1,9 @@
-import { Hello } from "@/components/hello";
+import { ApiClient } from "@/api-client";
 import Image from "next/image";
 
 export default async function Home() {
-  const baseUrl =
-    process.env.VERCEL_URL === "githubstats.suzuki3.jp"
-      ? "https://githubstats.suzuki3.jp/"
-      : "http://localhost:3000/";
+  const client = new ApiClient();
+  const res = await client.getHello();
 
   return (
     <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
@@ -57,7 +55,7 @@ export default async function Home() {
           </a>
         </div>
 
-        <Hello baseUrl={baseUrl} />
+        <div>{res.data?.message}</div>
       </main>
       <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
         <a
