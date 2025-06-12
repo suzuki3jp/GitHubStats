@@ -26,10 +26,17 @@ export class ApiClient {
     });
   }
 
+  /**
+   * Occurs an error (`Error occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error TypeError: fetch failed`) during build time when fetchin to the Go Vercel Functions API.
+   * This is because the Go Vercel Functions API is not available during build time.
+   * To avoid this error, we return a dummy response during build time.
+   * @returns
+   */
   private shouldReturnDummy(): boolean {
-    const isVercel = process.env.VERCEL === "1";
-    const isProduction = process.env.NODE_ENV === "production";
+    const isBuild =
+      process.env.NEXT_PHASE === "phase-production-build" ||
+      process.env.NEXT_PHASE === "phase-development-build";
 
-    return isVercel && isProduction;
+    return isBuild;
   }
 }
