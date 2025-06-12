@@ -5,8 +5,9 @@ export class ApiClient {
   private client: Client<paths>;
 
   constructor() {
-    const API_BASE_URL =
-      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+    const API_BASE_URL = process.env.VERCEL
+      ? "https://githubstats.suzuki3.jp"
+      : "http://localhost:3000";
     this.client = createClient<paths>({
       baseUrl: API_BASE_URL,
     });
