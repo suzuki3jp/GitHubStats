@@ -13,6 +13,7 @@ export async function hello(content: string) {
     params: {
       query: {
         content: "to Next.js!",
+        _: Date.now(), // Add a cache-busting parameter
       },
     },
   });
