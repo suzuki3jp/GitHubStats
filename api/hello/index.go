@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	// oapi-codegenで生成された型のパス。go.modのmodule名に合わせて修正してください
-	"github.com/suzuki3jp/GitHubStats/api/openapi"
+	openapi "github.com/suzuki3jp/GitHubStats/api/_openapi"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
