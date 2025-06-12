@@ -6,10 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "openapi:go": "go tool oapi-codegen -generate types,chi-server,spec -o ./api/openapi/openapi.gen.go ./api/openapi/openapi.yaml",
+    "openapi:ts": "openapi-typescript ./api/openapi/openapi.yaml -o ./src/openapi/openapi.d.ts",
+    "openapi": "pnpm run openapi:go && pnpm run openapi:ts"
   },
   "dependencies": {
     "next": "15.3.3",
+    "openapi-fetch": "^0.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -19,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "openapi-typescript": "^7.8.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
