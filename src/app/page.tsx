@@ -1,20 +1,11 @@
-import type { paths } from "@/openapi/openapi";
+import { Hello } from "@/components/hello";
 import Image from "next/image";
-import createClient from "openapi-fetch";
 
 export default async function Home() {
   const baseUrl =
     process.env.VERCEL_URL === "githubstats.suzuki3.jp"
       ? "https://githubstats.suzuki3.jp/"
       : "http://localhost:3000/";
-  const client = createClient<paths>({ baseUrl });
-  const res = await client.GET("/api/hello", {
-    params: {
-      query: {
-        content: "To Next.js",
-      },
-    },
-  });
 
   return (
     <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
@@ -66,7 +57,7 @@ export default async function Home() {
           </a>
         </div>
 
-        <div>{res.data?.message}</div>
+        <Hello baseUrl={baseUrl} />
       </main>
       <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
         <a
