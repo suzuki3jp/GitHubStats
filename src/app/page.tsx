@@ -54,7 +54,7 @@ export default async function Home() {
           </a>
         </div>
 
-        <div>{res.message}</div>
+        <div>{res.data?.message}</div>
       </main>
       <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
         <a

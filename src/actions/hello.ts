@@ -1,13 +1,20 @@
 "use server";
+import type { paths } from "@/openapi/openapi";
+import createClient from "openapi-fetch";
+
 export async function hello(content: string) {
   const baseUrl = process.env.VERCEL
     ? "https://githubstats.suzuki3.jp"
     : "http://localhost:3000";
-  const response = await fetch(
-    `${baseUrl}/api/hello?content=${encodeURIComponent(content)}`,
-    {
-      method: "GET",
+  const client = createClient<paths>({
+    baseUrl,
+  });
+  const response = await client.GET("/api/hello", {
+    params: {
+      query: {
+        content: "To Next.js!",
+      },
     },
-  );
-  return response.json();
+  });
+  return response;
 }

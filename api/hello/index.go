@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	// oapi-codegenで生成された型のパス。go.modのmodule名に合わせて修正してください
 	openapi "github.com/suzuki3jp/GitHubStats/api/_openapi"
@@ -25,7 +26,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// 正常レスポンス
 	resp := openapi.HelloResponse{
-		Message: "Hello from Go, " + content,
+		Message: "Hello from Go, " + content + " at " + time.Now().Format("2006-01-02 15:04:05"),
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
