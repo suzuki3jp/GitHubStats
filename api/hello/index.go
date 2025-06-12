@@ -26,7 +26,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// 正常レスポンス
 	resp := openapi.HelloResponse{
-		Message: "Hello from Go, " + content + " at " + time.Now().Format("2006-01-02 15:04:05"),
+		Message: "Hello from Go " + content + " at " + time.Now().Format("2006-01-02 15:04:05"),
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")

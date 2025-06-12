@@ -12,7 +12,7 @@ export async function hello(content: string) {
   const response = await client.GET("/api/hello", {
     params: {
       query: {
-        content: "To Next.js!",
+        content: "to Next.js!",
       },
     },
   });
