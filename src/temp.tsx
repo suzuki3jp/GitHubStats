@@ -1,8 +1,19 @@
+"use client";
+import { useEffect, useState } from "react";
 import { ApiClient } from "./api-client";
 
-export async function Temp() {
-  const client = new ApiClient();
-  const res = await client.getHello();
+export function Temp() {
+  const [data, setData] = useState("loading");
 
-  return <div>{res.data?.message}</div>;
+  async function f() {
+    const client = new ApiClient();
+    const res = await client.getHello();
+    setData(res.data?.message || "No message");
+  }
+
+  useEffect(() => {
+    f();
+  });
+
+  return <div>{data}</div>;
 }
