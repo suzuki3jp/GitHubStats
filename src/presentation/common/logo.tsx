@@ -8,7 +8,7 @@ export function Logo({ size, className }: LogoProps) {
 
   return (
     <Image
-      src={"/icon.png"}
+      src={"/images/icon.png"}
       alt="GitHub Stats Logo"
       width={size || DEFAULT_SIZE}
       height={size || DEFAULT_SIZE}
