@@ -1,4 +1,5 @@
 "use client";
+import { CookiesProvider } from "react-cookie";
 import { ThemeProvider } from "./theme-provider";
 
 /**
@@ -14,7 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <CookiesProvider>{children}</CookiesProvider>
     </ThemeProvider>
   );
 }

@@ -3,7 +3,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/presentation/common/shacn/button";
+import { Button } from "@/presentation/common/shadcn/button";
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);

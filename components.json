@@ -13,7 +13,7 @@
   "aliases": {
     "components": "@/components",
     "utils": "@/presentation/common/cn",
-    "ui": "@/presentation/common/shacn",
+    "ui": "@/presentation/common/shadcn",
     "lib": "@/lib",
     "hooks": "@/presentation/hooks"
   },
