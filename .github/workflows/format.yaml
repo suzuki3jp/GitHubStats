@@ -5,6 +5,9 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   biome:
     name: Biome
