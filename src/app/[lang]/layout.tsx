@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import "@/presentation/styles/globals.css";
-import { Header } from "@/presentation/header";
 import { useServerT } from "@/presentation/hooks/t/server";
 import { supportedLangs } from "@/presentation/localization/settings";
 import { Providers } from "@/presentation/providers";
@@ -33,11 +32,7 @@ export default async function ({ children, params }: LayoutProps) {
   return (
     <html lang={lang} dir={dir(lang)}>
       <body className={inter.className}>
-        <Providers>
-          <Header lang={lang} />
-
-          <main>{children}</main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
