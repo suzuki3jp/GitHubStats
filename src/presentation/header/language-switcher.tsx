@@ -80,7 +80,7 @@ function LS({ lang }: LanguageSwitcherProps) {
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search language..." />
+          <CommandInput placeholder={t("search-language")} />
           <CommandList>
             <CommandEmpty>No language found.</CommandEmpty>
             <CommandGroup>
