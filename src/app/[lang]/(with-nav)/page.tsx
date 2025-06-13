@@ -6,5 +6,5 @@ export default async function ({ params }: SSRProps) {
   const { lang } = await params;
   const { t } = await useServerT(lang, "home");
 
-  return <Home t={t} />;
+  return <Home t={t} lang={lang} />;
 }
