@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Trans } from "react-i18next/TransWithoutContext";
 
 import { MinHeightContainer } from "@/presentation/common/min-height-container";
+import { Button } from "@/presentation/common/shadcn/button";
 import type { WithT } from "@/typings";
-import { Button } from "../common/shadcn/button";
 
 export function Home({ t }: WithT) {
   return (
