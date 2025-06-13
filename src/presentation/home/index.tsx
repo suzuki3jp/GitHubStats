@@ -2,11 +2,12 @@ import { ChevronRight, Github } from "lucide-react";
 import Link from "next/link";
 import { Trans } from "react-i18next/TransWithoutContext";
 
+import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { MinHeightContainer } from "@/presentation/common/min-height-container";
 import { Button } from "@/presentation/common/shadcn/button";
 import type { WithT } from "@/typings";
 
-export function Home({ t }: WithT) {
+export function Home({ t, lang }: HomeProps) {
   return (
     <MinHeightContainer className="flex flex-col justify-center">
       <section className="relative overflow-hidden">
@@ -31,14 +32,16 @@ export function Home({ t }: WithT) {
             </div>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button size="lg" className="group" asChild>
-                <Link href="/sign-in">
+                <Link href={makeLocalizedHref("/sign-in", lang)}>
                   <Github className="mr-2 h-5 w-5" />
                   {t("hero.sign-in")}
                   <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/demo">{t("hero.view-demo")}</Link>
+                <Link href={makeLocalizedHref("/demo", lang)}>
+                  {t("hero.view-demo")}
+                </Link>
               </Button>
             </div>
           </div>
@@ -46,4 +49,8 @@ export function Home({ t }: WithT) {
       </section>
     </MinHeightContainer>
   );
+}
+
+interface HomeProps extends WithT {
+  lang: string;
 }
