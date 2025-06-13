@@ -31,7 +31,7 @@ export default async function ({ children, params }: LayoutProps) {
     <html lang={lang} dir={dir(lang)}>
       <body className="antialiased">
         <Providers>
-          <Header />
+          <Header lang={lang} />
 
           <main>{children}</main>
         </Providers>

@@ -1,8 +1,10 @@
 import { Logo } from "@/presentation/common/logo";
+import type { WithLang } from "@/typings";
 import { MaxWidthContainer } from "../common/max-width-container";
+import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "./theme-toggle";
 
-export function Header() {
+export function Header({ lang }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60">
       <MaxWidthContainer>
@@ -13,6 +15,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <LanguageSwitcher lang={lang} />
             <ThemeToggle />
           </div>
         </div>
@@ -20,3 +23,5 @@ export function Header() {
     </header>
   );
 }
+
+interface HeaderProps extends WithLang {}
