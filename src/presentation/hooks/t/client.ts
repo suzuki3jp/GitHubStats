@@ -26,7 +26,9 @@ i18next
     resourcesToBackend(
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       (language: any, namespace: any) =>
-        import(`@/localization/resources/${language}/${namespace}.json`),
+        import(
+          `@/presentation/localization/resources/${language}/${namespace}.json`
+        ),
     ),
   )
   .init({
