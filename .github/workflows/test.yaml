@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  Vitest:
-    name: Run Vitest
+  vitest:
+    name: Vitest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,8 +27,8 @@ jobs:
       - name: Run tests
         run: pnpm vitest run
 
-  Go:
-    name: Run Go tests
+  go:
+    name: Go
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
