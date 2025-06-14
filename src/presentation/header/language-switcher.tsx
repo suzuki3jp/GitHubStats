@@ -68,7 +68,7 @@ function LS({ lang }: LanguageSwitcherProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           variant="ghost"
           aria-expanded={open}
