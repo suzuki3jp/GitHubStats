@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { Logo } from "@/presentation/common/logo";
+import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { Button } from "@/presentation/common/shadcn/button";
 import {
   Card,
@@ -11,16 +12,19 @@ import {
   CardTitle,
 } from "@/presentation/common/shadcn/card";
 import { ThemeToggle } from "@/presentation/header/theme-toggle";
-import { SignInButton } from "./sign-in-button";
+import { useServerT } from "@/presentation/hooks/t/server";
+import { SignInButton } from "@/presentation/sign-in/sign-in-button";
 
-export function SignIn() {
+export async function SignIn({ lang }: SignInProps) {
+  const { t } = await useServerT(lang, "sign-in");
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted px-4 sm:px-6 lg:px-8">
       <div className="absolute top-4 left-4">
         <Button variant="ghost" asChild>
-          <Link href="/">
+          <Link href={makeLocalizedHref("/", lang)}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
+            {t("back-to-home")}
           </Link>
         </Button>
       </div>
@@ -34,21 +38,20 @@ export function SignIn() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary">
             <Logo size={32} />
           </div>
-          <CardTitle className="font-bold text-2xl">
-            Sign in to GitHub Stats
-          </CardTitle>
-          <CardDescription>
-            Connect your GitHub account to start analyzing your repositories
-          </CardDescription>
+          <CardTitle className="font-bold text-2xl">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <SignInButton />
+          <SignInButton lang={lang} />
           <p className="text-center text-muted-foreground text-xs">
-            We'll analyze your public repositories to generate insights. Your
-            private data remains secure.
+            {t("no-store")}
           </p>
         </CardContent>
       </Card>
     </div>
   );
+}
+
+interface SignInProps {
+  lang: string;
 }
