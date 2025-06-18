@@ -1,7 +1,7 @@
 {
-    "title": "GitHub Stats にサインイン",
-    "description": "GitHub アカウントを接続してリポジトリの分析を始めましょう",
-    "sign-in-with-github": "GitHub でサインイン",
-    "no-store": "あなたの GitHub のデータは一切私たちのサーバーに保存されません。すべてのデータは直接 GitHub から取得されます。",
-    "back-to-home": "ホームに戻る"
+  "title": "GitHub Stats にサインイン",
+  "description": "GitHub アカウントを接続してリポジトリの分析を始めましょう",
+  "sign-in-with-github": "GitHub でサインイン",
+  "no-store": "あなたの GitHub のデータは一切私たちのサーバーに保存されません。すべてのデータは直接 GitHub から取得されます。",
+  "back-to-home": "ホームに戻る"
 }
