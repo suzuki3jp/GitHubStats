@@ -1,3 +1,8 @@
-export default function () {
-  return <p>Sign in page is not ready</p>;
+import { SignIn } from "@/presentation/sign-in";
+import type { PageProps } from "@/typings";
+
+export default async function ({ params }: PageProps) {
+  const { lang } = await params;
+
+  return <SignIn lang={lang} />;
 }
