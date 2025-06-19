@@ -3,9 +3,9 @@ import createFetcher from "openapi-fetch";
 import type { paths } from "./openapi";
 
 export function createApiClient() {
-  const baseUrl = process.env.VERCEL
-    ? "https://githubstats.suzuki3.jp"
-    : "http://localhost:3000";
+  const baseUrl = process.env.LOCAL
+    ? "http://localhost:3000"
+    : "https://githubstats.suzuki3.jp";
   return new ApiClient(`${baseUrl}/api/v1`);
 }
 
