@@ -15,39 +15,27 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-chi/chi/v5"
-	"github.com/oapi-codegen/runtime"
 )
 
-// ErrorResponse defines model for ErrorResponse.
-type ErrorResponse struct {
-	Code    string `json:"code"`
+// StatusResponse defines model for StatusResponse.
+type StatusResponse struct {
 	Message string `json:"message"`
-}
-
-// HelloResponse defines model for HelloResponse.
-type HelloResponse struct {
-	Message string `json:"message"`
-}
-
-// GetApiHelloParams defines parameters for GetApiHello.
-type GetApiHelloParams struct {
-	Content string `form:"content" json:"content"`
 }
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Returns a hello message
-	// (GET /api/hello)
-	GetApiHello(w http.ResponseWriter, r *http.Request, params GetApiHelloParams)
+	// Check API Status
+	// (GET /status)
+	GetApiStatus(w http.ResponseWriter, r *http.Request)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
 
-// Returns a hello message
-// (GET /api/hello)
-func (_ Unimplemented) GetApiHello(w http.ResponseWriter, r *http.Request, params GetApiHelloParams) {
+// Check API Status
+// (GET /status)
+func (_ Unimplemented) GetApiStatus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -60,31 +48,11 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetApiHello operation middleware
-func (siw *ServerInterfaceWrapper) GetApiHello(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetApiHelloParams
-
-	// ------------- Required query parameter "content" -------------
-
-	if paramValue := r.URL.Query().Get("content"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "content"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "content", r.URL.Query(), &params.Content)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "content", Err: err})
-		return
-	}
+// GetApiStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetApiStatus(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetApiHello(w, r, params)
+		siw.Handler.GetApiStatus(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -208,7 +176,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/api/hello", wrapper.GetApiHello)
+		r.Get(options.BaseURL+"/status", wrapper.GetApiStatus)
 	})
 
 	return r
@@ -217,14 +185,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/6xSwW7UMBD9FevBMUqywMm3IiGoxAEtx2oPxpluXCW2dzxetIr235GdXdpCK3HglNie",
-	"ee/Nm7fAhjkGT14S9IJkR5pN/f3EHHhLKQafqFxEDpFYHNVnG4Z6K6dI0EjCzu9xbjBTSmb/0tu5AdMh",
-	"O6YB+m5FeKzfNdf68OOBrBSsLzRN4XUN/0z1OkepdP4+FIyBkmUXxQUPje9ujhOpKkHdfLtVP52MKho2",
-	"MwmxOprJDaYUK+MHlYSzlcw0KCrOKb7IbtFAnEyF9TcYGhyJ08q0afu2L+OGSN5EB4337abt0SAaGeuo",
-	"nYmuG0t7Oe1Jyqd4URXcDtD4THITXaWonRehCfpugStEh0x8QgNv5qLGBi/kBU+9Es7UXGJQLXb+K/m9",
-	"jNCb5i+Xd6V1HbOqfNf3azZWYL3AxDg5W0V2D6mMuzxBf8t0D4033WMKu0sEu+e7r4v6Y0HZWkqpGPfh",
-	"P/I+z/0LvB/NoLZ0yJSkBi3leTZ8gsaWJLNPyqi6KXWNXQVJxMfrNjJP0Ohw3p1/BQAA///7YgxeggMA",
-	"AA==",
+	"H4sIAAAAAAAC/1yRQa/aQAyE/0o07TFKQnvb21MP7buhckQclo0BU7K7XTtICOW/V16gVd9prdjjzHy+",
+	"I6Qpp0hRBe4OCSeafC036nWWnyQ5RSH7kkvKVJSp9icS8cfa0FsmOIgWjkcsS4tCv2cuNMJt/w7u2tdg",
+	"2p8pKBab5HhItmMkCYWzcopwWJd05ZGkEfXKohyk8aEkkeY764953xTKSVhTYZIOLZT1YrufbXMvzdv6",
+	"HS2uVOSxdtUN3YClRcoUfWY4fO1W3YAW2eup5uqlBrfySGqPpfZm7H20H5C+ZX7QgSV9AKqCL8NgT0hR",
+	"KVatz/nCoar7s5iJF2SrPhc6wOFT/+8K/fME/Qf+Fdb/kDZzCCRSgcs8Tb7c4PDtROGXJW+eHqtSqBgG",
+	"uO0dc7nAofeZ++sKy275EwAA//9gmq4XBgIAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

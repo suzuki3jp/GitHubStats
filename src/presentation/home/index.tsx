@@ -5,9 +5,12 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { MinHeightContainer } from "@/presentation/common/min-height-container";
 import { Button } from "@/presentation/common/shadcn/button";
+import { createApiClient } from "@/repository/api/client";
 import type { WithT } from "@/typings";
 
-export function Home({ t, lang }: HomeProps) {
+export async function Home({ t, lang }: HomeProps) {
+  const clinet = createApiClient();
+  console.log(await clinet.getStatus());
   return (
     <MinHeightContainer className="flex flex-col justify-center">
       <section className="relative overflow-hidden">
