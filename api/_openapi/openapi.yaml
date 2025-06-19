@@ -1,48 +1,33 @@
 openapi: 3.1.0
 info:
-  title: Hello API
+  title: GitHub Stats API
   version: "1.0.0"
-  description: Simple Hello API with parameter validation and structured error response.
+  description: Provides statistics across GitHub repositories.
 
 servers:
-  - url: /
+  - url: /api/v1
 
 paths:
-  /api/hello:
+  /status:
     get:
-      summary: Returns a hello message
-      operationId: GetApiHello
-      parameters:
-        - name: content
-          in: query
-          required: true
-          schema:
-            type: string
-            minLength: 1
+      summary: Check API Status
+      operationId: GetApiStatus
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HelloResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
+                $ref: '#/components/schemas/StatusResponse'
 components:
   schemas:
-    HelloResponse:
+    StatusResponse:
       type: object
       properties:
         message:
           type: string
       required:
         - message
-
     ErrorResponse:
       type: object
       properties:
