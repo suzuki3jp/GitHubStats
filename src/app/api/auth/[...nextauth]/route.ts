@@ -34,12 +34,18 @@ const handler = NextAuth({
     GitHubProvider({
       clientId: githubId,
       clientSecret: githubClientSecret,
+      authorization: {
+        params: {
+          scope: "read:user repo",
+        },
+      },
     }),
   ],
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
+        console.log("Access Token:", token.accessToken);
       }
       return token;
     },

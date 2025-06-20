@@ -15,15 +15,45 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-chi/chi/v5"
+	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+// ContributionDay defines model for ContributionDay.
+type ContributionDay struct {
+	Count int                `json:"count"`
+	Date  openapi_types.Date `json:"date"`
+}
+
+// ContributionDaysResponse defines model for ContributionDaysResponse.
+type ContributionDaysResponse struct {
+	Days     []ContributionDay `json:"days"`
+	Total    int               `json:"total"`
+	Username string            `json:"username"`
+}
+
+// ErrorResponse defines model for ErrorResponse.
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
 
 // StatusResponse defines model for StatusResponse.
 type StatusResponse struct {
 	Message string `json:"message"`
 }
 
+// GetContributionDaysParams defines parameters for GetContributionDays.
+type GetContributionDaysParams struct {
+	Username    string `form:"username" json:"username"`
+	AccessToken string `form:"access_token" json:"access_token"`
+}
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Get Contribution Days
+	// (GET /contribution-days)
+	GetContributionDays(w http.ResponseWriter, r *http.Request, params GetContributionDaysParams)
 	// Check API Status
 	// (GET /status)
 	GetApiStatus(w http.ResponseWriter, r *http.Request)
@@ -32,6 +62,12 @@ type ServerInterface interface {
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
+
+// Get Contribution Days
+// (GET /contribution-days)
+func (_ Unimplemented) GetContributionDays(w http.ResponseWriter, r *http.Request, params GetContributionDaysParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
 
 // Check API Status
 // (GET /status)
@@ -47,6 +83,55 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// GetContributionDays operation middleware
+func (siw *ServerInterfaceWrapper) GetContributionDays(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetContributionDaysParams
+
+	// ------------- Required query parameter "username" -------------
+
+	if paramValue := r.URL.Query().Get("username"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "username"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "username", r.URL.Query(), &params.Username)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "username", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "access_token" -------------
+
+	if paramValue := r.URL.Query().Get("access_token"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "access_token"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "access_token", r.URL.Query(), &params.AccessToken)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "access_token", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetContributionDays(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
 
 // GetApiStatus operation middleware
 func (siw *ServerInterfaceWrapper) GetApiStatus(w http.ResponseWriter, r *http.Request) {
@@ -176,6 +261,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/contribution-days", wrapper.GetContributionDays)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/status", wrapper.GetApiStatus)
 	})
 
@@ -185,12 +273,16 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/1yRQa/aQAyE/0o07TFKQnvb21MP7buhckQclo0BU7K7XTtICOW/V16gVd9prdjjzHy+",
-	"I6Qpp0hRBe4OCSeafC036nWWnyQ5RSH7kkvKVJSp9icS8cfa0FsmOIgWjkcsS4tCv2cuNMJt/w7u2tdg",
-	"2p8pKBab5HhItmMkCYWzcopwWJd05ZGkEfXKohyk8aEkkeY764953xTKSVhTYZIOLZT1YrufbXMvzdv6",
-	"HS2uVOSxdtUN3YClRcoUfWY4fO1W3YAW2eup5uqlBrfySGqPpfZm7H20H5C+ZX7QgSV9AKqCL8NgT0hR",
-	"KVatz/nCoar7s5iJF2SrPhc6wOFT/+8K/fME/Qf+Fdb/kDZzCCRSgcs8Tb7c4PDtROGXJW+eHqtSqBgG",
-	"uO0dc7nAofeZ++sKy275EwAA//9gmq4XBgIAAA==",
+	"H4sIAAAAAAAC/7xUTU8bPRD+K9a873GbDS2nvVH6xaVCcESoMt5JYsjaZmYcKYr2v1e2N2RJF0Sltqc4",
+	"6/HzMX7GOzC+C96hE4ZmB2xW2Om8PPdOyN5Fsd590tv0KZAPSGIxFxgfnaSFbANCA9YJLpGgr6DVgmln",
+	"4anTAk35UO0rWci6JfR9BYSP0RK20Nzsiwru7VO1v7tHIwn2SBJfIQfvGH/V1upt/rWCXV78T7iABv6r",
+	"D37rwWx97LR/otZEw38vej3tNTKS0x2Odl/w91RZFX172Cmrn4k8vezP+HaKsIIOmfXyDWIywqF+SsO1",
+	"aImvNPnNXC+TpErrFj7fGbIhG9ItQAOX5De2RVYsWiyLNay0Ic+svlr5Fu8UYfBsxZNFnqVmWlkn7GE7",
+	"qWd1dnkBFWyQuMCezOazeTLnAzodLDTwYXYym0MFQcsq+6rNKBDv9lFaYg57aoBOGxdt4kI5DmVGIt2h",
+	"IDE0NzuwifgxIm2hghKVcRYOnRKKWA0zONnVaSxtDDL/EP+A7lW85x0eH1MLT0pHWaETa7K/iXG9TeAl",
+	"Dbkl7+fzEkYnWJ4CHcJ6OF/fc6LZjfh/YwgPscsZea58XMuKUMjiBlvFMVtaxPU6T+3pH9T3fCAnRH3U",
+	"rbrCx4gshfv033F/96K++OjaPHocu07TtsRTjZulckBTTc15uF8L9lmw5QWAv3jtR2/MhLfrcqlHzs5X",
+	"aB7SdKtBYz7JSJv91EVaQwO1DrbenEB/2/8MAAD//9LJxsHsBgAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

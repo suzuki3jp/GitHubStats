@@ -16,7 +16,7 @@ services:
 
   vercel:
     build: .
-    command: vercel dev --listen 3001 --token=${VERCEL_TOKEN}
+    command: vercel dev --listen 3001 --token=${VERCEL_TOKEN} --yes
     working_dir: /app
     ports:
       - "3001:3001"
