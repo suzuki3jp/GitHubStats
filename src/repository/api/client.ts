@@ -4,7 +4,7 @@ import type { paths } from "./openapi";
 
 export function createApiClient() {
   const baseUrl = process.env.LOCAL
-    ? "http://localhost:3000"
+    ? "http://vercel:3001"
     : "https://githubstats.suzuki3.jp";
   return new ApiClient(`${baseUrl}/api/v1`);
 }
