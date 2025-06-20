@@ -36,7 +36,7 @@ export async function SignIn({ lang }: SignInProps) {
       <Card className="w-full max-w-md gap-0">
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-            <Logo size={32} />
+            <Logo />
           </div>
           <CardTitle className="font-bold text-2xl">{t("title")}</CardTitle>
           <CardDescription>{t("description")}</CardDescription>
