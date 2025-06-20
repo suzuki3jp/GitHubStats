@@ -9,8 +9,6 @@ import { createApiClient } from "@/repository/api/client";
 import type { WithT } from "@/typings";
 
 export async function Home({ t, lang }: HomeProps) {
-  const clinet = createApiClient();
-  console.log(await clinet.getStatus());
   return (
     <MinHeightContainer className="flex flex-col justify-center">
       <section className="relative overflow-hidden">
