@@ -21,12 +21,39 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/contribution-days": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Contribution Days */
+    get: operations["GetContributionDays"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     StatusResponse: {
       message: string;
+    };
+    ContributionDay: {
+      /** Format: date */
+      date: string;
+      count: number;
+    };
+    ContributionDaysResponse: {
+      username: string;
+      total: number;
+      days: components["schemas"]["ContributionDay"][];
     };
     ErrorResponse: {
       code: string;
@@ -57,6 +84,47 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StatusResponse"];
+        };
+      };
+    };
+  };
+  GetContributionDays: {
+    parameters: {
+      query: {
+        username: string;
+        access_token: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contributions retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContributionDaysResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
