@@ -12,6 +12,7 @@ import { ContributionTotal } from "./contribution-total";
 
 export async function ContributionGraphCard({
   lang,
+  demo,
 }: ContributionGraphCardProps) {
   const { t } = await useServerT(lang, "graph");
 
@@ -25,7 +26,7 @@ export async function ContributionGraphCard({
       </CardHeader>
       <CardContent className="p-6">
         <ContributionDaysProvider>
-          <ContributionGraph lang={lang} />
+          <ContributionGraph lang={lang} demo={demo} />
 
           <div className="mt-6 flex gap-1">
             <div className="text-muted-foreground text-sm">
@@ -57,4 +58,5 @@ export async function ContributionGraphCard({
 
 export interface ContributionGraphCardProps {
   lang: string;
+  demo?: boolean;
 }

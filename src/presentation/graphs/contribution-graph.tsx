@@ -16,32 +16,39 @@ import { getContributionDays } from "@/usecase/actions/get-contribution-days";
  * The graph for contributions.
  * Similar to the one on GitHub profile pages.
  */
-export function ContributionGraph({ lang }: ContributionGraphProps) {
+export function ContributionGraph({
+  lang,
+  demo = false,
+}: ContributionGraphProps) {
   const { t } = useT(lang, "graph");
 
   const auth = useAuth();
   const { contributionDays, setContributionDays } = useContributionDays();
 
   const refresh = useCallback(async () => {
-    if (!auth) return null;
+    if (!demo) {
+      if (!auth) return null;
 
-    const username = auth.user.name;
-    const accessToken = auth.accessToken;
+      const username = auth.user.name;
+      const accessToken = auth.accessToken;
 
-    const contributionDaysResponse = await getContributionDays(
-      username,
-      accessToken,
-    );
-    const contributionDays =
-      contributionDaysResponse?.days.map<ContributionDay>((d) => ({
-        date: new Date(d.date),
-        count: d.count,
-      }));
+      const contributionDaysResponse = await getContributionDays(
+        username,
+        accessToken,
+      );
+      const contributionDays =
+        contributionDaysResponse?.days.map<ContributionDay>((d) => ({
+          date: new Date(d.date),
+          count: d.count,
+        }));
 
-    if (!contributionDays) return null;
+      if (!contributionDays) return null;
 
-    setContributionDays(contributionDays);
-  }, [auth, setContributionDays]);
+      setContributionDays(contributionDays);
+    } else {
+      setContributionDays(generateDemoContributions(3));
+    }
+  }, [demo, auth, setContributionDays]);
 
   useEffect(() => {
     refresh();
@@ -179,8 +186,24 @@ export function ContributionGraph({ lang }: ContributionGraphProps) {
   );
 }
 
+function generateDemoContributions(years: number): ContributionDay[] {
+  const contributions: ContributionDay[] = [];
+  const today = new Date();
+  const days = years * 365;
+  for (let i = 0; i < days; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    contributions.push({
+      date,
+      count: Math.floor(Math.random() * 10), // Random contributions between 0 and 9
+    });
+  }
+  return contributions;
+}
+
 interface ContributionGraphProps {
   lang: string;
+  demo?: boolean;
 }
 
 export interface ContributionDay {
