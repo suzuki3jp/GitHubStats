@@ -35,6 +35,16 @@ func (s *Service) GetContributions(ctx context.Context, username string) (*opena
 	currentYear := createdAt.Year()
 	thisYear := time.Now().Year()
 
+	// Initialize all dates from user creation to now with count 0
+	current := createdAt
+	now := time.Now()
+	for !current.After(now) {
+		dateStr := current.Format("2006-01-02")
+		contributions[dateStr] = 0
+		current = current.AddDate(0, 0, 1)
+	}
+
+	// Fill in actual contribution counts
 	for year := currentYear; year <= thisYear; year++ {
 		yearContributions, err := s.getYearContributions(ctx, username, year)
 		if err != nil {
@@ -42,10 +52,12 @@ func (s *Service) GetContributions(ctx context.Context, username string) (*opena
 			continue
 		}
 
+		yearTotal := 0
 		for date, count := range yearContributions {
 			if count > 0 {
 				contributions[date] = count
 				totalCount += count
+				yearTotal += count
 			}
 		}
 	}

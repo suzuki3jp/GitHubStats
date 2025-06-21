@@ -1,22 +1,60 @@
+"use client";
+import { useCallback, useEffect } from "react";
+
+import { Skeleton } from "@/presentation/common/shadcn/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/presentation/common/shadcn/tooltip";
-import { useServerT } from "../hooks/t/server";
+import { useT } from "@/presentation/hooks/t/client";
+import { useAuth } from "@/presentation/hooks/useAuth";
+import { useContributionDays } from "@/presentation/hooks/useContributionDays";
+import { getContributionDays } from "@/usecase/actions/get-contribution-days";
 
 /**
  * The graph for contributions.
  * Similar to the one on GitHub profile pages.
  */
-export async function ContributionGraph({
-  contributions,
-  lang,
-}: ContributionGraphProps) {
-  const { t } = await useServerT(lang, "graph");
+export function ContributionGraph({ lang }: ContributionGraphProps) {
+  const { t } = useT(lang, "graph");
 
-  const sortedContributions = sortContributionsByDate(contributions);
-  const trimmedContributions = trimContributions(sortedContributions);
+  const auth = useAuth();
+  const { contributionDays, setContributionDays } = useContributionDays();
+
+  const refresh = useCallback(async () => {
+    if (!auth) return null;
+
+    const username = auth.user.name;
+    const accessToken = auth.accessToken;
+
+    const contributionDaysResponse = await getContributionDays(
+      username,
+      accessToken,
+    );
+    const contributionDays =
+      contributionDaysResponse?.days.map<ContributionDay>((d) => ({
+        date: new Date(d.date),
+        count: d.count,
+      }));
+
+    if (!contributionDays) return null;
+
+    setContributionDays(contributionDays);
+  }, [auth, setContributionDays]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  if (!contributionDays)
+    return (
+      <div className="overflow-x-auto pb-3">
+        <Skeleton className="h-[140px] w-[2000px]" />
+      </div>
+    );
+
+  const trimmedContributions = trimContributions(contributionDays);
   const weeks: ContributionDay[][] = [];
   for (let i = 0; i < trimmedContributions.length; i += 7) {
     const week = trimmedContributions.slice(i, i + 7);
@@ -143,7 +181,6 @@ export async function ContributionGraph({
 
 interface ContributionGraphProps {
   lang: string;
-  contributions: ContributionDay[];
 }
 
 export interface ContributionDay {

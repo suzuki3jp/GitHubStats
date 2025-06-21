@@ -2,6 +2,7 @@
 import { Github } from "lucide-react";
 import { signIn } from "next-auth/react";
 
+import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { Button } from "@/presentation/common/shadcn/button";
 import { useT } from "@/presentation/hooks/t/client";
 
@@ -9,7 +10,7 @@ export function SignInButton({ lang }: SignInButtonProps) {
   const { t } = useT(lang, "sign-in");
 
   function handleOnClick() {
-    signIn("github", { callbackUrl: "/" });
+    signIn("github", { callbackUrl: makeLocalizedHref("/overview", lang) });
   }
   return (
     <Button onClick={handleOnClick} className="w-full" size="lg">

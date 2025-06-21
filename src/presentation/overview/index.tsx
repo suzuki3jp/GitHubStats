@@ -1,6 +1,6 @@
+import { ContributionGraphCard } from "@/presentation/cards/contribution-graph-card";
 import { MaxWidthContainer } from "@/presentation/common/max-width-container";
 import { useServerT } from "@/presentation/hooks/t/server";
-import { ContributionGraphCard } from "../cards/contribution-graph-card";
 
 export async function Overview({ lang }: OverviewProps) {
   const { t } = await useServerT(lang, "overview");
@@ -8,13 +8,11 @@ export async function Overview({ lang }: OverviewProps) {
   return (
     <MaxWidthContainer>
       <div className="my-8">
-        <h1 className="mb-2 font-bold text-3xl">Your GitHub Analytics</h1>
-        <p className="text-muted-foreground">
-          Comprehensive insights into your development activity
-        </p>
+        <h1 className="mb-2 font-bold text-3xl">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("description")}</p>
       </div>
 
-      {/* <ContributionGraphCard lang={lang} /> */}
+      <ContributionGraphCard lang={lang} />
     </MaxWidthContainer>
   );
 }
