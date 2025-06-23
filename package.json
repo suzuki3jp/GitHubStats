@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "openapi:go": "go tool oapi-codegen -generate types,chi-server,spec -o ./api/_openapi/openapi.gen.go ./api/_openapi/openapi.yaml",
-    "openapi:ts": "openapi-typescript ./api/_openapi/openapi.yaml -o ./src/openapi/openapi.d.ts",
+    "openapi:ts": "openapi-typescript ./api/_openapi/openapi.yaml -o ./src/repository/api/openapi.d.ts",
     "openapi": "pnpm run openapi:go && pnpm run openapi:ts"
   },
   "dependencies": {

@@ -1,33 +1,56 @@
 openapi: 3.1.0
 info:
-  title: Hello API
+  title: GitHub Stats API
   version: "1.0.0"
-  description: Simple Hello API with parameter validation and structured error response.
+  description: Provides statistics across GitHub repositories.
 
 servers:
-  - url: /
+  - url: /api/v1
 
 paths:
-  /api/hello:
+  /status:
     get:
-      summary: Returns a hello message
-      operationId: GetApiHello
-      parameters:
-        - name: content
-          in: query
-          required: true
-          schema:
-            type: string
-            minLength: 1
+      summary: Check API Status
+      operationId: GetApiStatus
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HelloResponse'
+                $ref: '#/components/schemas/StatusResponse'
+
+  /contribution-days:
+    get:
+      summary: Get Contribution Days
+      operationId: GetContributionDays
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: access_token
+          in: query
+          required: true
+          schema:
+            type: string
+            description: access_token for authentication
+      responses:
+        '200':
+          description: Contributions retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributionDaysResponse'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -35,13 +58,41 @@ paths:
 
 components:
   schemas:
-    HelloResponse:
+    StatusResponse:
       type: object
       properties:
         message:
           type: string
       required:
         - message
+      
+    ContributionDay:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        count:
+          type: integer
+      required:
+        - date
+        - count
+
+    ContributionDaysResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        total:
+          type: integer
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContributionDay'
+      required:
+        - username
+        - days
+        - total
 
     ErrorResponse:
       type: object

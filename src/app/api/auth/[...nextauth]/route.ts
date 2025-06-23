@@ -34,6 +34,11 @@ const handler = NextAuth({
     GitHubProvider({
       clientId: githubId,
       clientSecret: githubClientSecret,
+      authorization: {
+        params: {
+          scope: "read:user repo",
+        },
+      },
     }),
   ],
   callbacks: {

@@ -15,10 +15,7 @@ export async function Demo({ lang }: DemoProps) {
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
 
-        <ContributionGraphCard
-          lang={lang}
-          contributions={generateDemoContributions(3)}
-        />
+        <ContributionGraphCard lang={lang} demo />
       </MaxWidthContainer>
     </MinHeightContainer>
   );
@@ -26,19 +23,4 @@ export async function Demo({ lang }: DemoProps) {
 
 interface DemoProps {
   lang: string;
-}
-
-function generateDemoContributions(years: number): ContributionDay[] {
-  const contributions: ContributionDay[] = [];
-  const today = new Date();
-  const days = years * 365;
-  for (let i = 0; i < days; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    contributions.push({
-      date,
-      count: Math.floor(Math.random() * 10), // Random contributions between 0 and 9
-    });
-  }
-  return contributions;
 }
