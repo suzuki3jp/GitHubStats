@@ -20,6 +20,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
 
+
+  /user:
+    get:
+      summary: Get User Information
+      operationId: GetUserInfo
+      parameters:
+        - name: access_token
+          in: query
+          required: true
+          schema:
+            type: string
+            description: access_token for authentication
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /contribution-days:
     get:
       summary: Get Contribution Days
@@ -65,6 +97,17 @@ components:
           type: string
       required:
         - message
+
+    UserResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        avatar_url:
+          type: string
+          format: uri
       
     ContributionDay:
       type: object

@@ -21,6 +21,16 @@ export class ApiClient {
     });
   }
 
+  async getUser(access_token: string) {
+    return await this.fetcher.GET("/user", {
+      params: {
+        query: {
+          access_token,
+        },
+      },
+    });
+  }
+
   async getContributionDays(username: string, access_token: string) {
     return await this.fetcher.GET("/contribution-days", {
       params: {
