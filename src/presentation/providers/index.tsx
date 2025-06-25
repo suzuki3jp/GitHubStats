@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <CookiesProvider>
-        <SessionProvider>
+        <SessionProvider basePath="/auth">
           <AuthProvider>{children}</AuthProvider>
         </SessionProvider>
       </CookiesProvider>
