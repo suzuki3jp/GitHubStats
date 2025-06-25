@@ -198,7 +198,7 @@ function generateDemoContributions(years: number): ContributionDay[] {
   for (let i = 0; i < days; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    contributions.push({
+    contributions.unshift({
       date,
       count: Math.floor(Math.random() * 10), // Random contributions between 0 and 9
     });
