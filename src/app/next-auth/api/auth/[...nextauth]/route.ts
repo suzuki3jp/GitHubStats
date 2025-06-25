@@ -23,10 +23,6 @@ const r = getEnv(["GITHUB_ID", "GITHUB_CLIENT_SECRET"]);
 if (r.isErr()) throw r.error;
 const [githubId, githubClientSecret] = r.value;
 
-const baseUrl = process.env.LOCAL
-  ? "http://localhost:3000"
-  : "https://githubstats.suzuki3.jp";
-
 const handler = NextAuth({
   session: {
     strategy: "jwt",
@@ -41,7 +37,6 @@ const handler = NextAuth({
       authorization: {
         params: {
           scope: "read:user repo",
-          redirect_uri: `${baseUrl}/auth/callback/github`,
         },
       },
     }),
