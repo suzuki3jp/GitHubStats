@@ -11,11 +11,12 @@ export function Header({ lang }: HeaderProps) {
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60">
       <MaxWidthContainer>
         <div className="flex h-16 justify-between">
-          <Link href={makeLocalizedHref("/", lang)}>
-            <div className="flex items-center space-x-2">
-              <Logo />
-              <h1 className="font-bold text-xl">GitHub Stats</h1>
-            </div>
+          <Link
+            href={makeLocalizedHref("/", lang)}
+            className="flex items-center space-x-2"
+          >
+            <Logo />
+            <h1 className="font-bold text-xl">GitHub Stats</h1>
           </Link>
 
           <div className="flex items-center space-x-4">
