@@ -11,6 +11,7 @@ import { useT } from "@/presentation/hooks/t/client";
 import { useAuth } from "@/presentation/hooks/useAuth";
 import { useContributionDays } from "@/presentation/hooks/useContributionDays";
 import { getContributionDays } from "@/usecase/actions/get-contribution-days";
+import { getUser } from "@/usecase/actions/get-user";
 
 /**
  * The graph for contributions.
@@ -29,8 +30,12 @@ export function ContributionGraph({
     if (!demo) {
       if (!auth) return null;
 
-      const username = auth.user.name;
       const accessToken = auth.accessToken;
+
+      const user = await getUser(accessToken);
+
+      if (!user || !user.username) return null;
+      const username = user.username;
 
       const contributionDaysResponse = await getContributionDays(
         username,

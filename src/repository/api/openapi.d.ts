@@ -21,6 +21,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/user": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get User Information */
+    get: operations["GetUserInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/contribution-days": {
     parameters: {
       query?: never;
@@ -44,6 +61,12 @@ export interface components {
   schemas: {
     StatusResponse: {
       message: string;
+    };
+    UserResponse: {
+      username?: string;
+      name?: string;
+      /** Format: uri */
+      avatar_url?: string;
     };
     ContributionDay: {
       /** Format: date */
@@ -84,6 +107,46 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StatusResponse"];
+        };
+      };
+    };
+  };
+  GetUserInfo: {
+    parameters: {
+      query: {
+        access_token: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description User information retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };

@@ -43,9 +43,21 @@ type StatusResponse struct {
 	Message string `json:"message"`
 }
 
+// UserResponse defines model for UserResponse.
+type UserResponse struct {
+	AvatarUrl *string `json:"avatar_url,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	Username  *string `json:"username,omitempty"`
+}
+
 // GetContributionDaysParams defines parameters for GetContributionDays.
 type GetContributionDaysParams struct {
 	Username    string `form:"username" json:"username"`
+	AccessToken string `form:"access_token" json:"access_token"`
+}
+
+// GetUserInfoParams defines parameters for GetUserInfo.
+type GetUserInfoParams struct {
 	AccessToken string `form:"access_token" json:"access_token"`
 }
 
@@ -57,6 +69,9 @@ type ServerInterface interface {
 	// Check API Status
 	// (GET /status)
 	GetApiStatus(w http.ResponseWriter, r *http.Request)
+	// Get User Information
+	// (GET /user)
+	GetUserInfo(w http.ResponseWriter, r *http.Request, params GetUserInfoParams)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -72,6 +87,12 @@ func (_ Unimplemented) GetContributionDays(w http.ResponseWriter, r *http.Reques
 // Check API Status
 // (GET /status)
 func (_ Unimplemented) GetApiStatus(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get User Information
+// (GET /user)
+func (_ Unimplemented) GetUserInfo(w http.ResponseWriter, r *http.Request, params GetUserInfoParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -138,6 +159,40 @@ func (siw *ServerInterfaceWrapper) GetApiStatus(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetApiStatus(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetUserInfo operation middleware
+func (siw *ServerInterfaceWrapper) GetUserInfo(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserInfoParams
+
+	// ------------- Required query parameter "access_token" -------------
+
+	if paramValue := r.URL.Query().Get("access_token"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "access_token"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "access_token", r.URL.Query(), &params.AccessToken)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "access_token", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetUserInfo(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -266,6 +321,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/status", wrapper.GetApiStatus)
 	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/user", wrapper.GetUserInfo)
+	})
 
 	return r
 }
@@ -273,16 +331,17 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/7xUTU8bPRD+K9a873GbDS2nvVH6xaVCcESoMt5JYsjaZmYcKYr2v1e2N2RJF0Sltqc4",
-	"6/HzMX7GOzC+C96hE4ZmB2xW2Om8PPdOyN5Fsd590tv0KZAPSGIxFxgfnaSFbANCA9YJLpGgr6DVgmln",
-	"4anTAk35UO0rWci6JfR9BYSP0RK20Nzsiwru7VO1v7tHIwn2SBJfIQfvGH/V1upt/rWCXV78T7iABv6r",
-	"D37rwWx97LR/otZEw38vej3tNTKS0x2Odl/w91RZFX172Cmrn4k8vezP+HaKsIIOmfXyDWIywqF+SsO1",
-	"aImvNPnNXC+TpErrFj7fGbIhG9ItQAOX5De2RVYsWiyLNay0Ic+svlr5Fu8UYfBsxZNFnqVmWlkn7GE7",
-	"qWd1dnkBFWyQuMCezOazeTLnAzodLDTwYXYym0MFQcsq+6rNKBDv9lFaYg57aoBOGxdt4kI5DmVGIt2h",
-	"IDE0NzuwifgxIm2hghKVcRYOnRKKWA0zONnVaSxtDDL/EP+A7lW85x0eH1MLT0pHWaETa7K/iXG9TeAl",
-	"Dbkl7+fzEkYnWJ4CHcJ6OF/fc6LZjfh/YwgPscsZea58XMuKUMjiBlvFMVtaxPU6T+3pH9T3fCAnRH3U",
-	"rbrCx4gshfv033F/96K++OjaPHocu07TtsRTjZulckBTTc15uF8L9lmw5QWAv3jtR2/MhLfrcqlHzs5X",
-	"aB7SdKtBYz7JSJv91EVaQwO1DrbenEB/2/8MAAD//9LJxsHsBgAA",
+	"H4sIAAAAAAAC/+xVzW7bPBB8FWK/76haTpuTbmn650sRJOgpCAKGWttMLJLZXRowDL97QcqOZUdRU6Dt",
+	"oegpirjanRnOjtdgfBO8QycM1RrYzLHR+fHcOyF7F8V690Gv0qtAPiCJxVxgfHSSHmQVECqwTnCGBJsC",
+	"ai2YTqaeGi1QtS+KXSULWTeDzaYAwsdoCWuorndFbd+bp2p/d49GUtsjSHyJHLxjfI6t1qv81wo2+eF/",
+	"wilU8F+551tuyZbHTDdPozXR9n8vetHPNTKS0w12Tl/g91RZtPh2bfuofiTy9DI/4+u+gQU0yKxnrwCT",
+	"O+zr+zBciZY4IPKrZw0N+cY4wFMvtWi6jbQ4sFMk+9xNBbxwDT+6oyNM6ZV1U599hGzIhuQMqOCC/NLW",
+	"yIpFi2WxhpU25JnVZytf4p0iDJ6teLLIowTRyiL13h4nRVmdXUyggCUSt21PRuPROMH0AZ0OFip4NzoZ",
+	"jaGAoGWehShNx6RvdvaeYV7ApJhOB5M6zUI5XpTciXSDgsRQXa/BpsGPEWkFO926/tzfnlDEYpsLvfL1",
+	"99LGIPOt+Ad0g/0OFe5+pqaelI4yRyfWZH49EXKTmrf2yZK8HY/bBXGCbTzpEBbb78t7TmPWnfk/EQz7",
+	"VcgeOUTerWVFKGRxibXimClN42KRk+T0F+I7DIkeUO91rS7xMSJLO/v0z83+6kV98tHVecc4No2mVWtP",
+	"1RVLZYOmmpJz4AwZ+yzYNpXgN177Ue71cLtqL/WI2fkczUPabrXFmEmlrRqilAJwkuLmVTv6V+zVQeb3",
+	"yJvOVYrgFPfJIv/WaXCdsl6TvV7t94y03Fkp/4BCqYMtlyewudl8DwAA///wANvu+QkAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
