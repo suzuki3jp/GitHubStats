@@ -1,5 +1,4 @@
 import { ArrowLeft } from "lucide-react";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -19,12 +18,6 @@ import { SignInButton } from "@/presentation/sign-in/sign-in-button";
 
 export async function SignIn({ lang }: SignInProps) {
   const { t } = await useServerT(lang, "sign-in");
-
-  const session = await getServerSession();
-
-  if (session) {
-    redirect(makeLocalizedHref("/overview", lang));
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted px-4 sm:px-6 lg:px-8">

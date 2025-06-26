@@ -11,7 +11,7 @@ acceptLanguage.languages(supportedLangs);
 
 export const config = {
   matcher: [
-    "/((?!api|next-auth|sitemap|images|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)",
+    "/((?!api|sitemap|images|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)",
   ],
 };
 

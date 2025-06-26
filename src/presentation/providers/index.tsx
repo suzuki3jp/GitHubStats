@@ -1,7 +1,5 @@
 "use client";
-import { SessionProvider } from "next-auth/react";
 import { CookiesProvider } from "react-cookie";
-import { AuthProvider } from "./auth-context";
 import { ThemeProvider } from "./theme-provider";
 
 /**
@@ -18,9 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <CookiesProvider>
-        <SessionProvider basePath="/next-auth">
-          <AuthProvider>{children}</AuthProvider>
-        </SessionProvider>
+          {children}
       </CookiesProvider>
     </ThemeProvider>
   );

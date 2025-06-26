@@ -1,6 +1,5 @@
 "use client";
 import { Github } from "lucide-react";
-import { signIn } from "next-auth/react";
 
 import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { Button } from "@/presentation/common/shadcn/button";
@@ -10,7 +9,7 @@ export function SignInButton({ lang }: SignInButtonProps) {
   const { t } = useT(lang, "sign-in");
 
   function handleOnClick() {
-    signIn("github", { callbackUrl: makeLocalizedHref("/overview", lang) });
+    alert("Sign in is not implemented yet")
   }
   return (
     <Button onClick={handleOnClick} className="w-full" size="lg">
