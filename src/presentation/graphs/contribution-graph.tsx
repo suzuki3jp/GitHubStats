@@ -8,8 +8,8 @@ import {
   TooltipTrigger,
 } from "@/presentation/common/shadcn/tooltip";
 import { useT } from "@/presentation/hooks/t/client";
-import { useAuth } from "@/presentation/hooks/useAuth";
 import { useContributionDays } from "@/presentation/hooks/useContributionDays";
+import { createClient } from "@/supabase/client";
 import { getContributionDays } from "@/usecase/actions/get-contribution-days";
 import { getUser } from "@/usecase/actions/get-user";
 
@@ -23,14 +23,15 @@ export function ContributionGraph({
 }: ContributionGraphProps) {
   const { t } = useT(lang, "graph");
 
-  const auth = useAuth();
   const { contributionDays, setContributionDays } = useContributionDays();
 
   const refresh = useCallback(async () => {
     if (!demo) {
-      if (!auth) return null;
+      const client = await createClient();
+      const session = await client.auth.getSession();
+      if (!session || !session.data?.session?.provider_token) return null;
 
-      const accessToken = auth.accessToken;
+      const accessToken = session.data.session.provider_token;
 
       const user = await getUser(accessToken);
 
@@ -53,7 +54,7 @@ export function ContributionGraph({
     } else {
       setContributionDays(generateDemoContributions(3));
     }
-  }, [demo, auth, setContributionDays]);
+  }, [demo, setContributionDays]);
 
   useEffect(() => {
     refresh();
