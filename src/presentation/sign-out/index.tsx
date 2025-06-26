@@ -4,8 +4,7 @@ import { useEffect } from "react";
 import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 
 export function SignOut({ lang }: SignOutProps) {
-  useEffect(() => {
-  });
+  useEffect(() => {});
 
   return <div />;
 }

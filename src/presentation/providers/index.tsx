@@ -15,9 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <CookiesProvider>
-          {children}
-      </CookiesProvider>
+      <CookiesProvider>{children}</CookiesProvider>
     </ThemeProvider>
   );
 }
