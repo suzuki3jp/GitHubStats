@@ -4,13 +4,14 @@ import { Github } from "lucide-react";
 import { Button } from "@/presentation/common/shadcn/button";
 import { useT } from "@/presentation/hooks/t/client";
 import { createClient } from "@/supabase/client";
+import { getBaseUrl } from "@/usecase/actions/get-base-url";
 
 export function SignInButton({ lang }: SignInButtonProps) {
   const { t } = useT(lang, "sign-in");
 
   async function handleOnClick() {
     const supabase = await createClient();
-    const baseUrl = window.location.origin;
+    const baseUrl = await getBaseUrl();
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
