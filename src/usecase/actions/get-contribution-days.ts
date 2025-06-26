@@ -5,7 +5,7 @@ export async function getContributionDays(
   username: string,
   access_token: string,
 ) {
-  const apiClient = createApiClient();
+  const apiClient = await createApiClient();
   const response = await apiClient.getContributionDays(username, access_token);
 
   return response.data;

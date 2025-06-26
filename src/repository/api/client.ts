@@ -1,11 +1,10 @@
 import createFetcher from "openapi-fetch";
 
+import { getBaseUrl } from "@/usecase/actions/get-base-url";
 import type { paths } from "./openapi";
 
-export function createApiClient() {
-  const baseUrl = process.env.LOCAL
-    ? "http://localhost:3000"
-    : "https://githubstats.suzuki3.jp";
+export async function createApiClient() {
+  const baseUrl = await getBaseUrl();
   return new ApiClient(`${baseUrl}/api/v1`);
 }
 
