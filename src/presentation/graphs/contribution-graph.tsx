@@ -9,6 +9,7 @@ import {
 } from "@/presentation/common/shadcn/tooltip";
 import { useT } from "@/presentation/hooks/t/client";
 import { useContributionDays } from "@/presentation/hooks/useContributionDays";
+import { createClient } from "@/supabase/client";
 import { getContributionDays } from "@/usecase/actions/get-contribution-days";
 import { getUser } from "@/usecase/actions/get-user";
 
@@ -26,9 +27,11 @@ export function ContributionGraph({
 
   const refresh = useCallback(async () => {
     if (!demo) {
+      const client = await createClient();
+      const session = await client.auth.getSession();
+      if (!session || !session.data?.session?.provider_token) return null;
 
-      // const accessToken = auth.accessToken;
-      const accessToken = ""
+      const accessToken = session.data.session.provider_token;
 
       const user = await getUser(accessToken);
 

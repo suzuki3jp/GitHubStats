@@ -1,15 +1,23 @@
 "use client";
 import { Github } from "lucide-react";
 
-import { makeLocalizedHref } from "@/presentation/common/makeLocalizedHref";
 import { Button } from "@/presentation/common/shadcn/button";
 import { useT } from "@/presentation/hooks/t/client";
+import { createClient } from "@/supabase/client";
 
 export function SignInButton({ lang }: SignInButtonProps) {
   const { t } = useT(lang, "sign-in");
 
-  function handleOnClick() {
-    alert("Sign in is not implemented yet")
+  async function handleOnClick() {
+    const supabase = await createClient();
+    const baseUrl = window.location.origin;
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        scopes: "read:user repo",
+        redirectTo: `${baseUrl}/callback/github?lang=${lang}`,
+      },
+    });
   }
   return (
     <Button onClick={handleOnClick} className="w-full" size="lg">
