@@ -16,7 +16,7 @@ export function Header({ lang }: HeaderProps) {
             className="flex items-center space-x-2"
           >
             <Logo />
-            <h1 className="font-bold text-xl">GitHub Stats</h1>
+            <h1 className="hidden font-bold text-xl sm:inline">GitHub Stats</h1>
           </Link>
 
           <div className="flex items-center space-x-4">
