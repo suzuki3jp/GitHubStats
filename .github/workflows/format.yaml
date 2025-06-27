@@ -27,13 +27,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run format
-        run: pnpm biome format --write
-    
-      - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'style: format code with biome'
+      - name: Run format check
+        run: |
+          if ! pnpm biome check .; then
+            echo "❌ Biome formatting issues found. Please run 'pnpm biome check --apply .' to fix them."
+            exit 1
+          fi
+          echo "✅ All files are properly formatted with Biome."
 
   go:
     name: Go
@@ -50,10 +50,14 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
 
-      - name: Run tests
-        run: go fmt ./api/...
-
-      - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: 'style: format code with go fmt'
+      - name: Run format check
+        run: |
+          # Check if any files need formatting
+          UNFORMATTED=$(find ./api -name "*.go" -exec gofmt -l {} \; 2>/dev/null || true)
+          if [ -n "$UNFORMATTED" ]; then
+            echo "❌ Go formatting issues found in the following files:"
+            echo "$UNFORMATTED"
+            echo "Please run 'gofmt -w \$(find ./api -name \"*.go\")' to fix them."
+            exit 1
+          fi
+          echo "✅ All Go files are properly formatted."

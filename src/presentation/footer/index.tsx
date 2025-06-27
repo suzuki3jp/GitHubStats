@@ -15,9 +15,6 @@ export async function Footer({ lang }: FooterProps) {
     "VERCEL_GIT_COMMIT_SHA",
   ]);
 
-  console.log(isLocal);
-  console.log(commitInfo);
-
   if (!isLocal && commitInfo.isErr())
     throw new Error("Failed to get commit info on Vercel");
 
