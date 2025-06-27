@@ -53,10 +53,11 @@ jobs:
       - name: Run format check
         run: |
           # Check if any files need formatting
-          if [ "$(gofmt -l ./api/...)" != "" ]; then
+          UNFORMATTED=$(find ./api -name "*.go" -exec gofmt -l {} \; 2>/dev/null || true)
+          if [ -n "$UNFORMATTED" ]; then
             echo "❌ Go formatting issues found in the following files:"
-            gofmt -l ./api/...
-            echo "Please run 'go fmt ./api/...' to fix them."
+            echo "$UNFORMATTED"
+            echo "Please run 'gofmt -w \$(find ./api -name \"*.go\")' to fix them."
             exit 1
           fi
           echo "✅ All Go files are properly formatted."
