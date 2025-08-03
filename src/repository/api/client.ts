@@ -41,6 +41,17 @@ export class ApiClient {
     });
   }
 
+  async getLanguageStats(username: string, access_token: string) {
+    return await this.fetcher.GET("/language-stats", {
+      params: {
+        query: {
+          username,
+          access_token,
+        },
+      },
+    });
+  }
+
   async getStatus() {
     return await this.fetcher.GET("/status");
   }

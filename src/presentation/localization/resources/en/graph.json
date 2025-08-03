@@ -15,5 +15,10 @@
       "5": "Fri",
       "6": "Sat"
     }
+  },
+  "languageUsage": {
+    "title": "Language Usage",
+    "description": "Distribution of programming languages across your repositories",
+    "noData": "No language data available"
   }
 }
