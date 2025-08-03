@@ -38,6 +38,27 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+// LanguageStats defines model for LanguageStats.
+type LanguageStats struct {
+	// Color GitHub language color in hex format
+	Color    string `json:"color"`
+	Language string `json:"language"`
+	Lines    int    `json:"lines"`
+}
+
+// LanguageStatsResponse defines model for LanguageStatsResponse.
+type LanguageStatsResponse struct {
+	Repositories   []RepositoryLanguageStats `json:"repositories"`
+	TotalLanguages []LanguageStats           `json:"total_languages"`
+	Username       string                    `json:"username"`
+}
+
+// RepositoryLanguageStats defines model for RepositoryLanguageStats.
+type RepositoryLanguageStats struct {
+	Languages  []LanguageStats `json:"languages"`
+	Repository string          `json:"repository"`
+}
+
 // StatusResponse defines model for StatusResponse.
 type StatusResponse struct {
 	Message string `json:"message"`
@@ -56,6 +77,12 @@ type GetContributionDaysParams struct {
 	AccessToken string `form:"access_token" json:"access_token"`
 }
 
+// GetLanguageStatsParams defines parameters for GetLanguageStats.
+type GetLanguageStatsParams struct {
+	Username    string `form:"username" json:"username"`
+	AccessToken string `form:"access_token" json:"access_token"`
+}
+
 // GetUserInfoParams defines parameters for GetUserInfo.
 type GetUserInfoParams struct {
 	AccessToken string `form:"access_token" json:"access_token"`
@@ -66,6 +93,9 @@ type ServerInterface interface {
 	// Get Contribution Days
 	// (GET /contribution-days)
 	GetContributionDays(w http.ResponseWriter, r *http.Request, params GetContributionDaysParams)
+	// Get Language Statistics
+	// (GET /language-stats)
+	GetLanguageStats(w http.ResponseWriter, r *http.Request, params GetLanguageStatsParams)
 	// Check API Status
 	// (GET /status)
 	GetApiStatus(w http.ResponseWriter, r *http.Request)
@@ -81,6 +111,12 @@ type Unimplemented struct{}
 // Get Contribution Days
 // (GET /contribution-days)
 func (_ Unimplemented) GetContributionDays(w http.ResponseWriter, r *http.Request, params GetContributionDaysParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get Language Statistics
+// (GET /language-stats)
+func (_ Unimplemented) GetLanguageStats(w http.ResponseWriter, r *http.Request, params GetLanguageStatsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -145,6 +181,55 @@ func (siw *ServerInterfaceWrapper) GetContributionDays(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetContributionDays(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetLanguageStats operation middleware
+func (siw *ServerInterfaceWrapper) GetLanguageStats(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLanguageStatsParams
+
+	// ------------- Required query parameter "username" -------------
+
+	if paramValue := r.URL.Query().Get("username"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "username"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "username", r.URL.Query(), &params.Username)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "username", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "access_token" -------------
+
+	if paramValue := r.URL.Query().Get("access_token"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "access_token"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "access_token", r.URL.Query(), &params.AccessToken)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "access_token", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetLanguageStats(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -319,6 +404,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/contribution-days", wrapper.GetContributionDays)
 	})
 	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/language-stats", wrapper.GetLanguageStats)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/status", wrapper.GetApiStatus)
 	})
 	r.Group(func(r chi.Router) {
@@ -331,17 +419,20 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+xVzW7bPBB8FWK/76haTpuTbmn650sRJOgpCAKGWttMLJLZXRowDL97QcqOZUdRU6Dt",
-	"oegpirjanRnOjtdgfBO8QycM1RrYzLHR+fHcOyF7F8V690Gv0qtAPiCJxVxgfHSSHmQVECqwTnCGBJsC",
-	"ai2YTqaeGi1QtS+KXSULWTeDzaYAwsdoCWuorndFbd+bp2p/d49GUtsjSHyJHLxjfI6t1qv81wo2+eF/",
-	"wilU8F+551tuyZbHTDdPozXR9n8vetHPNTKS0w12Tl/g91RZtPh2bfuofiTy9DI/4+u+gQU0yKxnrwCT",
-	"O+zr+zBciZY4IPKrZw0N+cY4wFMvtWi6jbQ4sFMk+9xNBbxwDT+6oyNM6ZV1U599hGzIhuQMqOCC/NLW",
-	"yIpFi2WxhpU25JnVZytf4p0iDJ6teLLIowTRyiL13h4nRVmdXUyggCUSt21PRuPROMH0AZ0OFip4NzoZ",
-	"jaGAoGWehShNx6RvdvaeYV7ApJhOB5M6zUI5XpTciXSDgsRQXa/BpsGPEWkFO926/tzfnlDEYpsLvfL1",
-	"99LGIPOt+Ad0g/0OFe5+pqaelI4yRyfWZH49EXKTmrf2yZK8HY/bBXGCbTzpEBbb78t7TmPWnfk/EQz7",
-	"VcgeOUTerWVFKGRxibXimClN42KRk+T0F+I7DIkeUO91rS7xMSJLO/v0z83+6kV98tHVecc4No2mVWtP",
-	"1RVLZYOmmpJz4AwZ+yzYNpXgN177Ue71cLtqL/WI2fkczUPabrXFmEmlrRqilAJwkuLmVTv6V+zVQeb3",
-	"yJvOVYrgFPfJIv/WaXCdsl6TvV7t94y03Fkp/4BCqYMtlyewudl8DwAA///wANvu+QkAAA==",
+	"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",
+	"jchTUct0dcm3j9svAQAA///SfbmO1g8AAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -1,8 +1,8 @@
 import { ContributionGraphCard } from "@/presentation/cards/contribution-graph-card";
 import { MaxWidthContainer } from "@/presentation/common/max-width-container";
 import { MinHeightContainer } from "@/presentation/common/min-height-container";
-import type { ContributionDay } from "@/presentation/graphs/contribution-graph";
 import { useServerT } from "@/presentation/hooks/t/server";
+import { LanguageUsageGraph } from "../graphs/language-usage";
 
 export async function Demo({ lang }: DemoProps) {
   const { t } = await useServerT(lang, "demo");
@@ -16,6 +16,15 @@ export async function Demo({ lang }: DemoProps) {
         </div>
 
         <ContributionGraphCard lang={lang} demo />
+
+        <LanguageUsageGraph
+          languages={
+            new Map([
+              ["JavaScript", { color: "#f1e05a", lines: 1000 }],
+              ["Python", { color: "#3572A5", lines: 500 }],
+            ])
+          }
+        />
       </MaxWidthContainer>
     </MinHeightContainer>
   );

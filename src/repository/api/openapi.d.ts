@@ -55,6 +55,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/language-stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Language Statistics */
+    get: operations["GetLanguageStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -77,6 +94,22 @@ export interface components {
       username: string;
       total: number;
       days: components["schemas"]["ContributionDay"][];
+    };
+    LanguageStats: {
+      language: string;
+      lines: number;
+      /** @description GitHub language color in hex format */
+      color: string;
+    };
+    RepositoryLanguageStats: {
+      repository: string;
+      languages: components["schemas"]["LanguageStats"][];
+    };
+    LanguageStatsResponse: {
+      forEach(arg0: (stat: any) => void): unknown;
+      username: string;
+      total_languages: components["schemas"]["LanguageStats"][];
+      repositories: components["schemas"]["RepositoryLanguageStats"][];
     };
     ErrorResponse: {
       code: string;
@@ -170,6 +203,47 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ContributionDaysResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      /** @description Not Found */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GetLanguageStats: {
+    parameters: {
+      query: {
+        username: string;
+        access_token: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Language statistics retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LanguageStatsResponse"];
         };
       };
       /** @description Bad Request */
